@@ -1,5 +1,5 @@
 const { Types } = require('mongoose');
-const {Thoughts, User} = require('../models');
+const {Thoughts, User, Reactions} = require('../models');
 
 module.exports = {
   getThoughts(req, res) {
@@ -51,7 +51,33 @@ module.exports = {
     .catch(err =>{
       console.log(err);
     })
-  } 
+  },
+  addReaction(req,res){
+    Thoughts.findOneAndUpdate({ _id: req.params.thoughtId },
+      {$addToSet:{reactions:{
+        reactionBody: req.body.reactionBody,
+        username: req.body.username,
+        CreatedAt: new Date()
+      }}},
+      {new:true}
+      )
+    .then(thought =>{
+      res.status(201).json(thought);
+    })
+    .catch(err =>{
+      console.log(err);
+    })
+  },
+  deleteReaction(req,res){
+    Thoughts.updateOne(
+      {_id: req.params.thoughtId},
+      {$pull:{reactions: {_id: req.params.reactionsId}}},
+      {new:true}
+    )
+    .then((results)=>{
+      res.status(201).json(results)
+    })
+  }
 
 
 };
