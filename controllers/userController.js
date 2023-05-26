@@ -23,6 +23,22 @@ module.exports = {
       .catch((err) => res.status(500).json(err));
   },
 
-    
+  updateUser(req,res){
+    User.findOneAndUpdate({ _id: req.params.userId }, req.body,{new:true})
+    .then(results =>{
+      res.status(201).json(results);
+    })
+  } ,
+  
+  deleteUser(req,res){
+    User.findOneAndDelete({ _id: req.params.userId})
+    .then(results =>{
+      res.status(201).json(results)
+    })
+    .catch(err =>{
+      console.log(err);
+    })
+  } 
+
 
 };
