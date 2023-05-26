@@ -16,18 +16,25 @@ module.exports = {
       )
       .catch((err) => res.status(500).json(err));
   },
-  // create a new user
   createUser(req, res) {
     User.create(req.body)
       .then((dbUserData) => res.json(dbUserData))
       .catch((err) => res.status(500).json(err));
   },
-
-  updateUser(req,res){
-    User.findOneAndUpdate({ _id: req.params.userId }, req.body,{new:true})
-    .then(results =>{
-      res.status(201).json(results);
-    })
+addUserfriends(req,res){
+    User.findOne({ username: req.body.username },{new:true})
+      .select('-__v')
+      .then((user) => {
+        return User.findByIdAndUpdate(
+          {_id: req.params.userId},
+          {$addToSet:{friends:user._id}},
+          {new:true}
+        )
+      })
+      .then((results)=>{
+        res.status(201).json(results)
+      })
+      .catch((err) => res.status(500).json(err));
   } ,
   
   deleteUser(req,res){
@@ -37,6 +44,23 @@ module.exports = {
     })
     .catch(err =>{
       console.log(err);
+    })
+  },
+ updateUser(req,res){
+  User.findOneAndUpdate({ _id: req.params.userId }, req.body,{new:true})
+  .then((result)=>{
+    res.status(201).json(result)
+  })
+  },
+    
+  deleteUserFriend(req,res){
+    User.updateOne(
+      {_id: req.params.userId},
+      {$pull:{friends: req.params.friendsId}},
+      {new:true}
+    )
+    .then((results)=>{
+      res.status(201).json(results)
     })
   } 
 
