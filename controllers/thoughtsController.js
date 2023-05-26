@@ -34,7 +34,7 @@ module.exports = {
   },
 
   updateThought(req,res){
-    Thoughts.findOneAndUpdate({ _id: new Types.ObjectId(req.params.userId) }, req.body,{new:true})
+    Thoughts.findOneAndUpdate({ _id: req.params.thoughtId },req.body, {new:true})
     .then(thought =>{
       res.status(201).json(thought);
     })
@@ -44,7 +44,7 @@ module.exports = {
   } ,
   
   deleteThought(req,res){
-    Thoughts.findOneAndDelete({ _id: req.params.userId})
+    Thoughts.findOneAndDelete({ _id: req.params.thoughtId})
     .then(results =>{
       res.status(201).json(results)
     })
