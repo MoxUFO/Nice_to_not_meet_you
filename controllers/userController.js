@@ -48,6 +48,7 @@ addUserfriends(req,res){
   },
  updateUser(req,res){
   User.findOneAndUpdate({ _id: req.params.userId }, req.body,{new:true})
+  .select('-__v')
   .then((result)=>{
     res.status(201).json(result)
   })
